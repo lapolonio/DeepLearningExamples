@@ -13,6 +13,8 @@
 
 import modeling
 import tokenization
+import sys
+sys.path.append("../..")
 from tensorrtserver.api import ProtocolType, InferContext, ServerStatusContext, grpc_service_pb2_grpc, grpc_service_pb2, model_config_pb2
 from utils.create_squad_data import *
 import grpc
