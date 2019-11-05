@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import sys
-sys.path.append("../..")
+sys.path.append("/workspace/DeepLearningExamples/TensorFlow/LanguageModeling/BERT")
 import modeling
 import tokenization
 from tensorrtserver.api import ProtocolType, InferContext, ServerStatusContext, grpc_service_pb2_grpc, grpc_service_pb2, model_config_pb2
