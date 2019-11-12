@@ -92,7 +92,7 @@ def run_client():
 
     prof_request = grpc_service_pb2.server__status__pb2.model__config__pb2.ModelConfig()
 
-    prof_response = stub.Profile(prof_request)
+    prof_response = stub.Status(prof_request)
 
     status_ctx = ServerStatusContext(url, protocol, model_name=model_name, verbose=verbose)
 
