@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker pull nvcr.io/nvidia/tensorrtserver:19.08-py3
+docker pull nvcr.io/nvidia/tensorrtserver:19.10-py3
 
 #Will have to update submodule from root
 git submodule update --init --recursive
