@@ -21,7 +21,7 @@ import numpy as np
 import tqdm
 
 # Set this to either 'label_ids' for Google bert or 'unique_ids' for JoC
-label_id_key = "unique_ids"
+label_id_key = "label_ids"
 
 PendingResult = collections.namedtuple("PendingResult",
                                    ["async_id", "start_time", "inputs"])
@@ -39,7 +39,7 @@ def batch(iterable, n=1):
             input_mask_data = input_mask_data+ (np.array(iterable[ndx + i].input_mask, dtype=np.int32),)
             segment_ids_data = segment_ids_data+ (np.array(iterable[ndx + i].segment_ids, dtype=np.int32),)
 
-        inputs_dict = {label_id_key: label_ids_data,
+        inputs_dict = {#label_id_key: label_ids_data,
                        'input_ids': input_ids_data,
                        'input_mask': input_mask_data,
                        'segment_ids': segment_ids_data}
@@ -127,15 +127,16 @@ def run_client():
 
         time_list.append(stop - outResult.start_time)
 
-        batch_count = len(outResult.inputs[label_id_key])
+        batch_count = len(outResult.inputs["input_ids"])
 
         for i in range(batch_count):
-            unique_id = int(outResult.inputs[label_id_key][i][0])
-            start_logits = [float(x) for x in result["start_logits"][i].flat]
-            end_logits = [float(x) for x in result["end_logits"][i].flat]
+            # unique_id = int(outResult.inputs[label_id_key][i][0])
+            print(result["cls_dense"].shape)
+            start_logits = [float(x) for x in result["cls_dense"][i][:,0].flat]
+            end_logits = [float(x) for x in result["cls_dense"][i][:,1].flat]
             all_results.append(
                 RawResult(
-                    unique_id=unique_id,
+                    # unique_id=unique_id,
                     start_logits=start_logits,
                     end_logits=end_logits))
 
@@ -150,10 +151,9 @@ def run_client():
 
     for inputs_dict in batch(eval_features, batch_size):
 
-        present_batch_size = len(inputs_dict[label_id_key])
+        present_batch_size = len(inputs_dict["input_ids"])
 
-        outputs_dict = {'start_logits': InferContext.ResultFormat.RAW,
-                        'end_logits': InferContext.ResultFormat.RAW}
+        outputs_dict = {'cls_dense': InferContext.ResultFormat.RAW}
 
         start = time.time()
         async_id = ctx.async_run(inputs_dict, outputs_dict, batch_size=present_batch_size)

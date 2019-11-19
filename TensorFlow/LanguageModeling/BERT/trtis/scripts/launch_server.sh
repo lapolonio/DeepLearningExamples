@@ -19,6 +19,8 @@ nvidia-docker run -d --rm \
    -p8002:8002 \
    --name trt_server_cont \
    -e NVIDIA_VISIBLE_DEVICES=$NV_VISIBLE_DEVICES \
+   -e LD_PRELOAD=/plugins/libbert_plugins.so:/plugins/libcommon.so \
    -e TF_ENABLE_AUTO_MIXED_PRECISION_GRAPH_REWRITE \
    -v $PWD/results/trtis_models:/models \
+   -v $PWD/plugins:/plugins \
    nvcr.io/nvidia/tensorrtserver:19.10-py3 trtserver --model-store=/models --strict-model-config=false

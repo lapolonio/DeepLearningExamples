@@ -4,7 +4,7 @@ FROM tensorrtserver_client as trt
 
 FROM ${FROM_IMAGE_NAME}
 
-RUN apt-get update && apt-get install -y pbzip2 pv bzip2 libcurl3
+RUN apt-get update && apt-get install -y pbzip2 pv bzip2 cmake
 
 RUN pip install toposort networkx pytest nltk tqdm html2text progressbar
 
@@ -13,6 +13,10 @@ RUN git clone https://github.com/openai/gradient-checkpointing.git
 RUN git clone https://github.com/attardi/wikiextractor.git
 RUN git clone https://github.com/soskek/bookcorpus.git
 RUN git clone https://github.com/titipata/pubmed_parser
+RUN git clone --branch release/6.0 --recursive https://github.com/NVIDIA/TensorRT
+
+RUN cd TensorRT/demo/BERT && sh python/build_examples.sh
+RUN mkdir /workspace/bert/plugins/ && cp /workspace/TensorRT/demo/BERT/build/*.so /workspace/bert/plugins/
 
 RUN pip3 install /workspace/pubmed_parser
 
